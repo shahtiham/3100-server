@@ -56,7 +56,7 @@ CREATE TABLE a_vote (
 
 app.use(
     cors({
-        origin: ["http://localhost:3000"],
+        origin: "*",
         methods: ["GET", "POST"],
         credentials: true,
     })
@@ -71,10 +71,10 @@ app.use(express.urlencoded({ extended: true }));
 // TODO -> hide
 
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    pass: '',
-    database: 'project3100'
+    host: process.env.HOST,
+    user: process.env.USER,
+    password: process.env.PASSWORD,
+    database: process.env.DATABASE
 });
 
 const auth = (req, res, next) => {
@@ -86,7 +86,7 @@ const auth = (req, res, next) => {
         return res.status(403).send("A token is required for authentication");
     }
     try {
-        const decoded = jwt.verify(token, "keyboardcat");
+        const decoded = jwt.verify(token, process.env.SECRET);
         req.user = decoded;
         //console.log(req.user)
     } catch (err) {
@@ -386,7 +386,7 @@ app.post("/register", (req, res) => {
                     if (user) {
                         const token = jwt.sign(
                             { user_id: user.id, email },
-                            "keyboardcat",
+                            process.env.SECRET,
                             {
                                 expiresIn: "120s",
                             }
@@ -422,7 +422,7 @@ app.post("/login", (req, res) => {
                 if (result) {
                     const token = jwt.sign(
                         { user_id: user[0].id, email },
-                        "keyboardcat",
+                        process.env.SECRET,
                         {
                             expiresIn: "120s",
                         }
