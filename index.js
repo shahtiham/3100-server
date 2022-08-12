@@ -359,7 +359,7 @@ app.get('/vote/:ud/:qa/:id', auth, (req, res) => {
 });
 
 app.get('/isloggedin', auth, (req, res) => {
-    console.log(req.user)
+    //console.log(req.user)
     const user = {user_id:req.user.user_id,email:req.user.email,isloggedin:'loggedin'}
     //res.send('loggedin');
     res.json(user)
@@ -385,7 +385,6 @@ app.post("/register", (req, res) => {
             bcrypt.hash(pass, 10, function (err, hash) {
                 db.query(`INSERT INTO credentials (username, email, pass) VALUES ('${username}', '${email}', '${hash}')`, (err, user) => {
                     if (user) {
-                        console.log(user)
                         const token = jwt.sign(
                             { user_id: user.insertId, email },
                             process.env.SECRET,
