@@ -359,7 +359,7 @@ app.get('/vote/:ud/:qa/:id', auth, (req, res) => {
 });
 
 app.get('/isloggedin', auth, (req, res) => {
-    //console.log(req)
+    console.log(req)
     const user = {user_id:req.user.user_id,email:req.user.email,isloggedin:'loggedin'}
     //res.send('loggedin');
     res.json(user)
