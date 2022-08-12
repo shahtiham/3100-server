@@ -387,7 +387,7 @@ app.post("/register", (req, res) => {
                     if (user) {
                         console.log(user)
                         const token = jwt.sign(
-                            { user_id: user.id, email },
+                            { user_id: user.insertId, email },
                             process.env.SECRET,
                             {
                                 expiresIn: "120s",
