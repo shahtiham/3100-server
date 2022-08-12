@@ -385,6 +385,7 @@ app.post("/register", (req, res) => {
             bcrypt.hash(pass, 10, function (err, hash) {
                 db.query(`INSERT INTO credentials (username, email, pass) VALUES ('${username}', '${email}', '${hash}')`, (err, user) => {
                     if (user) {
+                        console.log(user)
                         const token = jwt.sign(
                             { user_id: user.id, email },
                             process.env.SECRET,
