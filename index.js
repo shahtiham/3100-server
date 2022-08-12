@@ -386,7 +386,7 @@ app.post("/register", (req, res) => {
                 db.query(`INSERT INTO credentials (username, email, pass) VALUES ('${username}', '${email}', '${hash}')`, (err, user) => {
                     if (user) {
                         const token = jwt.sign(
-                            { user_id: user[0].id, email },
+                            { user_id: user.id, email },
                             process.env.SECRET,
                             {
                                 expiresIn: "120s",
