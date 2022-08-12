@@ -54,14 +54,14 @@ CREATE TABLE a_vote (
 
 */
 
-/* app.use(
+app.use(
     cors({
         origin: "*",
         methods: ["GET", "POST"],
         credentials: true,
     })
-) */
-app.use(cors());
+)
+//app.use(cors());
 
 app.use(helmet());
 app.use(express.json());
