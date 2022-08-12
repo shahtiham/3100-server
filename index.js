@@ -359,7 +359,7 @@ app.get('/vote/:ud/:qa/:id', auth, (req, res) => {
 });
 
 app.get('/isloggedin', auth, (req, res) => {
-    console.log(req)
+    console.log(req.user)
     const user = {user_id:req.user.user_id,email:req.user.email,isloggedin:'loggedin'}
     //res.send('loggedin');
     res.json(user)
@@ -386,7 +386,7 @@ app.post("/register", (req, res) => {
                 db.query(`INSERT INTO credentials (username, email, pass) VALUES ('${username}', '${email}', '${hash}')`, (err, user) => {
                     if (user) {
                         const token = jwt.sign(
-                            { user_id: user.id, email },
+                            { user_id: user[0].id, email },
                             process.env.SECRET,
                             {
                                 expiresIn: "120s",
