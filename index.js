@@ -71,10 +71,10 @@ app.use(express.urlencoded({ extended: true }));
 // TODO -> hide
 
 const db = mysql.createConnection({
-    host: 'sql8.freemysqlhosting.net',
-    user: 'sql8511960',
-    pass: '9A6aAZXyra',
-    database: 'sql8511960'
+    host: 'localhost',
+    user: 'root',
+    pass: '',
+    database: 'project3100'
 });
 
 const auth = (req, res, next) => {
@@ -128,9 +128,10 @@ app.get('/questions/uid/:qid', (req, res) => {
 
 //query to get questions of current user:
 //SELECT questions.q_id, questions.question, questions.tag, questions.created, UPVOTE.votes FROM questions LEFT JOIN (SELECT q_vote.q_id, SUM(q_vote.vote) as votes FROM q_vote GROUP BY q_vote.q_id) AS UPVOTE ON questions.q_id = UPVOTE.q_id WHERE questions.u_id = 14
-app.get('/questions/:uid', (req, res) => {
+app.get('/questions/:uid/:o', (req, res) => {
     //console.log('2')
-    db.query(`SELECT questions.q_id, questions.title, credentials.username FROM questions RIGHT JOIN credentials ON questions.u_id = credentials.id WHERE credentials.id = ${req.params.uid}`, (err, rlt) => {
+    let q = `SELECT T.q_id, T.title, T.username, T.created, S.votes FROM (SELECT questions.q_id, questions.title, credentials.username, questions.created FROM questions RIGHT JOIN credentials ON questions.u_id = credentials.id WHERE credentials.id = ${req.params.uid}) AS T LEFT JOIN (SELECT SUM(q_vote.vote) AS votes, q_vote.q_id FROM q_vote GROUP BY q_vote.q_id) AS S ON T.q_id = S.q_id ORDER BY ${(req.params.o === 'date')?'T.created':'S.votes'} DESC`
+    db.query(q, (err, rlt) => {
         if(err) {
             console.log(err.stack);
             res.send('Error communicating with DB server');
@@ -140,8 +141,9 @@ app.get('/questions/:uid', (req, res) => {
     });
 });
 
-app.get('/questions/ans/:uid', (req, res) => {
-    db.query(`SELECT T.q_id, T.title, T.a_id, credentials.username FROM (SELECT questions.q_id, questions.title, answers.a_id, answers.u_id FROM questions JOIN answers ON questions.q_id = answers.q_id WHERE answers.u_id = ${req.params.uid}) AS T RIGHT JOIN credentials ON T.u_id = credentials.id WHERE credentials.id = ${req.params.uid}`, (err, rlt) => {
+app.get('/questions/ans/:uid/:o', (req, res) => {
+    let q = `SELECT S.q_id, S.title, S.a_id, S.username, S.date, R.votes FROM (SELECT T.q_id, T.title, T.a_id, credentials.username, T.date FROM (SELECT questions.q_id, questions.title, answers.a_id, answers.u_id, answers.date FROM questions JOIN answers ON questions.q_id = answers.q_id WHERE answers.u_id = ${req.params.uid}) AS T RIGHT JOIN credentials ON T.u_id = credentials.id WHERE credentials.id = ${req.params.uid}) AS S LEFT JOIN (SELECT SUM(a_vote.vote) AS votes, a_vote.a_id FROM a_vote GROUP BY a_vote.a_id) AS R ON R.a_id = S.a_id ORDER BY ${(req.params.o === 'date')?'S.date':'R.votes'} DESC`
+    db.query(q, (err, rlt) => {
         if(err){
             console.log(err.stack);
             res.send('Error communicating with DB server');
@@ -152,7 +154,7 @@ app.get('/questions/ans/:uid', (req, res) => {
 })
 
 // with/without tag & with? username
-app.get('/questions/tagged/:tag/:qid', (req, res) => {
+app.get('/questions/tagged/:tag/:qid/:o', (req, res) => {
     //console.log('3')
     //`SELECT LT.q_id, LT.u_id, credentials.username, LT.title, LT.question, LT.tag, LT.created, LT.votes FROM (SELECT questions.q_id, questions.u_id, questions.title, questions.question, questions.tag, questions.created, UPVOTE.votes FROM questions LEFT JOIN (SELECT q_vote.q_id, SUM(q_vote.vote) as votes FROM q_vote GROUP BY q_vote.q_id) AS UPVOTE ON questions.q_id = UPVOTE.q_id) AS LT LEFT JOIN credentials ON LT.u_id = credentials.id WHERE LT.tag LIKE 'vanilla'`
 
@@ -165,6 +167,7 @@ app.get('/questions/tagged/:tag/:qid', (req, res) => {
             q = q + ` WHERE LT.q_id = ${req.params.qid}`
         }
     }
+    q = q + ` ORDER BY ${(req.params.o === 'date')?'LT.created':'LT.votes'} DESC`
     // with username
     
     db.query(q, (err, rlt) => {
