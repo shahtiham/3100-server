@@ -233,7 +233,7 @@ app.get('/answers/:q_id', (req, res) => {
 
     // correct one :
     // SELECT answers.a_id, answers.answer, answers.q_id, answers.u_id, answers.date, UPVOTE.votes FROM answers LEFT JOIN (SELECT a_vote.a_id, SUM(a_vote.vote) as votes FROM a_vote GROUP BY a_id) AS UPVOTE ON answers.a_id = UPVOTE.a_id WHERE answers.q_id = 1
-    const q = `SELECT LT.a_id,LT.answer,LT.q_id,LT.u_id,credentials.username,LT.date,LT.votes FROM (SELECT answers.a_id, answers.answer, answers.q_id, answers.u_id, answers.date, UPVOTE.votes FROM answers LEFT JOIN (SELECT a_vote.a_id, SUM(a_vote.vote) as votes FROM a_vote GROUP BY a_id) AS UPVOTE ON answers.a_id = UPVOTE.a_id) AS LT LEFT JOIN credentials ON LT.u_id = credentials.id WHERE LT.q_id = ${req.params.q_id}`
+    const q = `SELECT LT.a_id,LT.answer,LT.q_id,LT.u_id,credentials.username,LT.date,LT.votes FROM (SELECT answers.a_id, answers.answer, answers.q_id, answers.u_id, answers.date, UPVOTE.votes FROM answers LEFT JOIN (SELECT a_vote.a_id, SUM(a_vote.vote) as votes FROM a_vote GROUP BY a_id) AS UPVOTE ON answers.a_id = UPVOTE.a_id) AS LT LEFT JOIN credentials ON LT.u_id = credentials.id WHERE LT.q_id = ${req.params.q_id} ORDER BY LT.votes DESC`
     db.query(q , (err, rlt) => {
         if(err) {
             console.log(err.stack);
