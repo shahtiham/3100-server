@@ -389,7 +389,7 @@ app.post("/register", (req, res) => {
                             { user_id: user.insertId, email },
                             process.env.SECRET,
                             {
-                                expiresIn: "120s",
+                                expiresIn: "4h",
                             }
                         );
                         user.username = username;
@@ -425,7 +425,7 @@ app.post("/login", (req, res) => {
                         { user_id: user[0].id, email },
                         process.env.SECRET,
                         {
-                            expiresIn: "120s",
+                            expiresIn: "4h",
                         }
                     );
                     user[0].token = token;
