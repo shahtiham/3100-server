@@ -69,7 +69,7 @@ app.disable('x-powered-by');
 app.use(express.urlencoded({ extended: true }));
 
 
-// TODO -> hide
+// TODO -> hide..
 
 const db = mysql.createConnection({
     host: process.env.HOST,
