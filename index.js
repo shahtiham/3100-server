@@ -75,10 +75,7 @@ const db = mysql.createConnection({
     host: process.env.HOST,
     user: process.env.USER,
     password: process.env.PASSWORD,
-    database: process.env.DATABASE,
-    connectionLimit: 50,
-    queueLimit: 0,
-    waitForConnection: true
+    database: process.env.DATABASE
 });
 
 const auth = (req, res, next) => {
