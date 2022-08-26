@@ -99,7 +99,7 @@ const auth = (req, res, next) => {
 
 // curl http://localhost:8080/questions
 
-// specific question..
+// specific question...
 app.get('/questions/qid/:qid', (req, res) => {
     //console.log('1')
     //SELECT * FROM questions
