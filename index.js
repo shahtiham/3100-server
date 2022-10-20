@@ -72,10 +72,11 @@ app.use(express.urlencoded({ extended: true }));
 // TODO -> hide
 
 const db = mysql.createConnection({
-    host: process.env.HOST,
-    user: process.env.USER,
-    password: process.env.PASSWORD,
-    database: process.env.DATABASE
+    host: process.env.host,
+    port: process.env.port,
+    user: process.env.user,
+    password: process.env.password,
+    database: process.env.database
 });
 
 const auth = (req, res, next) => {
@@ -87,7 +88,7 @@ const auth = (req, res, next) => {
         return res.status(403).send("A token is required for authentication");
     }
     try {
-        const decoded = jwt.verify(token, process.env.SECRET);
+        const decoded = jwt.verify(token, process.env.secret);
         req.user = decoded;
         //console.log(req.user)
     } catch (err) {
@@ -387,7 +388,7 @@ app.post("/register", (req, res) => {
                     if (user) {
                         const token = jwt.sign(
                             { user_id: user.insertId, email },
-                            process.env.SECRET,
+                            process.env.secret,
                             {
                                 expiresIn: "4h",
                             }
@@ -423,7 +424,7 @@ app.post("/login", (req, res) => {
                 if (result) {
                     const token = jwt.sign(
                         { user_id: user[0].id, email },
-                        process.env.SECRET,
+                        process.env.secret,
                         {
                             expiresIn: "4h",
                         }
