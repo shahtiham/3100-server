@@ -72,11 +72,11 @@ app.use(express.urlencoded({ extended: true }));
 // TODO -> hide
 
 const db = mysql.createConnection({
-    host: process.env.host,
-    port: process.env.port,
-    user: process.env.user,
-    password: process.env.password,
-    database: process.env.database
+    host: process.env.HOST,
+    //port: process.env.port,
+    user: process.env.USER,
+    password: process.env.PASSWORD,
+    database: process.env.DATABASE
 });
 
 const auth = (req, res, next) => {
