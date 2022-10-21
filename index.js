@@ -68,9 +68,6 @@ app.use(express.json());
 app.disable('x-powered-by');
 app.use(express.urlencoded({ extended: true }));
 
-
-// TODO -> hide
-
 const db = mysql.createConnection({
     host: process.env.HOST,
     //port: process.env.port,
@@ -97,8 +94,6 @@ const auth = (req, res, next) => {
 
     return next();
 };
-
-// curl http://localhost:8080/questions
 
 // specific question...
 app.get('/questions/qid/:qid', (req, res) => {
@@ -184,8 +179,6 @@ app.get('/questions/tagged/:tag/:qid/:o', (req, res) => {
 
 });
 
-// curl -d '{"question": "What is the capital of Bangladesh?", "tag":"gk"}' -H "Content-Type: application/json" -X POST http://localhost:8080/questions
-
 app.post('/questions', auth, (req, res) => {
     //console.log('4')
     db.query(`INSERT INTO questions (u_id, title, question, tag) VALUES (${req.user.user_id}, "${req.body.title}", "${req.body.question}", '${req.body.tag}')`, (err, rlt) => {
@@ -219,8 +212,6 @@ app.post('/questions/edit', auth, (req, res) => {
     }
 });
 
-// curl http://localhost:8080/answers/1
-
 app.get('/answers/:q_id', (req, res) => {
     //console.log("hello", req.user)
     //`SELECT * FROM answers, (SELECT a_id, COUNT(a_id) AS upvote FROM a_vote) AS UPVOTE WHERE q_id = ${req.params.q_id} AND UPVOTE.a_id = answers.a_id`
@@ -245,8 +236,6 @@ app.get('/answers/:q_id', (req, res) => {
     });
 
 });
-
-// curl -d '{"answer": "Dhaka", "q_id":"1"}' -H "Content-Type: application/json" -X POST http://localhost:8080/answers
 
 app.post('/answers', auth, (req, res) => {
 
@@ -281,8 +270,6 @@ app.post('/answers/edit', auth, (req, res) => {
     }
 });
 
-// curl http://localhost:8080/search/capital
-// TODO
 
 function getq(words){
     return new Promise((resolve, reject) => {
@@ -314,8 +301,6 @@ app.get('/search/:search', async (req, res) => {
         console.log('error')
     }
 });
-
-// curl -H "Authorization: $TOKEN"  http://localhost:8080/upvote/q/1
 
 app.get('/vote/:ud/:qa/:id', auth, (req, res) => {
     let aorq = (req.params.qa === 'q')?'questions':'answers'
@@ -367,8 +352,6 @@ app.get('/isloggedin', auth, (req, res) => {
 })
 
 //register
-// curl -d '{"username": "tiham", "email":"tiham@420.com", "pass":"tihamvai"}' -H "Content-Type: application/json" -X POST http://localhost:8080/register
-
 
 app.post("/register", (req, res) => {
 
@@ -405,7 +388,6 @@ app.post("/register", (req, res) => {
 });
 
 // login
-// curl -d '{"email":"tiham@420.com", "pass":"tihamvai"}' -H "Content-Type: application/json" -X POST http://localhost:8080/login
 
 
 app.post("/login", (req, res) => {
