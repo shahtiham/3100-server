@@ -115,7 +115,7 @@ app.get('/questions/qid/:qid', (req, res) => {
 
 });
 
-// specific question with username(unnecessary..)
+// specific question with username(un-necessary..)
 app.get('/questions/uid/:qid', (req, res) => {
     db.query(`SELECT credentials.username FROM questions LEFT JOIN credentials ON questions.u_id = credentials.id WHERE questions.q_id = ${req.params.qid}`, (err, rlt) => {
         if(err) {
